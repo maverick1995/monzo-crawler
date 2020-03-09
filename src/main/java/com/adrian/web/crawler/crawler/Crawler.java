@@ -97,14 +97,15 @@ public class Crawler implements Runnable {
 				 * same domain, if it hasn't been visited and if it's not already in the queue
 				 */
 				if (disallowedURLs.stream().noneMatch(linkURL::startsWith)
-						&& CrawlerUtils.isSameDomain(linkURL, firstURL) && !visited.contains(linkURL)
-						&& queue.stream().map(Page::getUrl).noneMatch(linkURL::equals)) {
+						&& CrawlerUtils.isSameDomain(linkURL, firstURL)) {
 					/*
-					 * Create a new page, set the URL with the link add it to the queue
+					 * If it's not in the queue, create a new page and add it
 					 */
-					Page linkedPage = new Page();
-					linkedPage.setUrl(linkURL);
-					queue.add(linkedPage);
+					if (queue.stream().map(Page::getUrl).noneMatch(linkURL::equals)) {
+						Page linkedPage = new Page();
+						linkedPage.setUrl(linkURL);
+						queue.add(linkedPage);
+					}
 
 					/*
 					 * Add the list of links to the page

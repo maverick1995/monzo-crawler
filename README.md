@@ -3,6 +3,8 @@ Crawler for Monzo take home assignment. It crawls all URLs within a single domai
 
 # Create JAR file
 - Run `mvn clean compile assembly:single`
+
+# Run JAR file
 - Run generated file in the target folder called web.crawler-0.0.1-SNAPSHOT-jar-with-dependencies with the command ` java -jar web.crawler-0.0.1-SNAPSHOT-jar-with-dependencies.jar {arg1} {arg2} {arg3} {arg4}` passing the 4 mandatory arguments
 - A file called `result.html` will be generated with a table containing all the URLs crawled along with their links
 

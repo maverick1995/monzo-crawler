@@ -1,5 +1,5 @@
 # Monzo Crawler
-Crawler for Monzo take home assignment. It crawls all URLs within a single domain and creates an HTML file with the result
+Crawler for Monzo take home assignment. It crawls all URLs within a single domain and creates an HTML file with the result. The program is written in Java 8 and uses Maven
 
 # Create JAR file
 - Run `mvn clean compile assembly:single`

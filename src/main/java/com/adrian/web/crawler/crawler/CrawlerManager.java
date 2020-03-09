@@ -145,7 +145,7 @@ public class CrawlerManager {
 				 */
 				if (disallowedURLs.stream().noneMatch(linkURL::startsWith)) {
 					/*
-					 * Create a new page, set the URL with the link add it to the queue
+					 * If it's not in the queue, create a new page and add it
 					 */
 					if (CrawlerUtils.isSameDomain(linkURL, url)
 							&& queue.stream().map(Page::getUrl).noneMatch(linkURL::equals)) {

@@ -96,12 +96,12 @@ public class Crawler implements Runnable {
 				 * Check if the current URL is in the disallowed list, if they belong to the
 				 * same domain, if it hasn't been visited and if it's not already in the queue
 				 */
-				if (disallowedURLs.stream().noneMatch(linkURL::startsWith)
-						&& CrawlerUtils.isSameDomain(linkURL, firstURL)) {
+				if (disallowedURLs.stream().noneMatch(linkURL::startsWith)) {
 					/*
 					 * If it's not in the queue, create a new page and add it
 					 */
-					if (queue.stream().map(Page::getUrl).noneMatch(linkURL::equals)) {
+					if (queue.stream().map(Page::getUrl).noneMatch(linkURL::equals)
+							&& CrawlerUtils.isSameDomain(linkURL, firstURL)) {
 						Page linkedPage = new Page();
 						linkedPage.setUrl(linkURL);
 						queue.add(linkedPage);
@@ -119,7 +119,7 @@ public class Crawler implements Runnable {
 			 */
 			page.setLinks(links);
 			if (showLog)
-				LOG.info("Crawled {}. Found {} valid links", page.getUrl(), page.getLinks().size());
+				LOG.info("Crawled {}. Found {} links", page.getUrl(), page.getLinks().size());
 			sitemap.addPage(page);
 
 		} catch (IOException e) {

@@ -143,14 +143,16 @@ public class CrawlerManager {
 				 * Check if the current URL is in the disallowed list, if they belong to the
 				 * same domain, and if it's not already in the queue
 				 */
-				if (disallowedURLs.stream().noneMatch(linkURL::startsWith) && CrawlerUtils.isSameDomain(linkURL, url)
-						&& queue.stream().map(Page::getUrl).noneMatch(linkURL::equals)) {
+				if (disallowedURLs.stream().noneMatch(linkURL::startsWith)) {
 					/*
 					 * Create a new page, set the URL with the link add it to the queue
 					 */
-					Page linkedPage = new Page();
-					linkedPage.setUrl(linkURL);
-					queue.add(linkedPage);
+					if (CrawlerUtils.isSameDomain(linkURL, url)
+							&& queue.stream().map(Page::getUrl).noneMatch(linkURL::equals)) {
+						Page linkedPage = new Page();
+						linkedPage.setUrl(linkURL);
+						queue.add(linkedPage);
+					}
 
 					/*
 					 * Add the list of links to the page
@@ -165,7 +167,7 @@ public class CrawlerManager {
 			 */
 			page.setLinks(links);
 			if (showLog)
-				LOG.info("Crawled {} Found {} valid links", page.getUrl(), page.getLinks().size());
+				LOG.info("Crawled {} Found {} links", page.getUrl(), page.getLinks().size());
 			sitemap.addPage(page);
 		} catch (IOException e) {
 			LOG.error("Error parsing {}", page.getUrl());

@@ -10,21 +10,20 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.adrian.web.crawler.model.Page;
 import com.adrian.web.crawler.model.Sitemap;
 import com.adrian.web.crawler.utils.CrawlerUtils;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 public class Crawler implements Runnable {
+
+	private static final Logger LOG = LoggerFactory.getLogger(Crawler.class);
 
 	private final List<String> visited;
 
 	private final BlockingQueue<Page> queue;
-
-	private final String url;
 
 	private final String firstURL;
 
@@ -32,17 +31,19 @@ public class Crawler implements Runnable {
 
 	private final List<String> disallowedURLs;
 
+	private final Boolean showLog;
+
 	/*
 	 * Constructor
 	 */
-	public Crawler(String url, Sitemap s, List<String> visited, BlockingQueue<Page> queue,
-			List<String> disallowedURLs) {
-		this.url = url;
+	public Crawler(String url, Sitemap s, List<String> visited, BlockingQueue<Page> queue, List<String> disallowedURLs,
+			Boolean showLog) {
 		this.firstURL = url;
 		this.sitemap = s;
 		this.queue = queue;
 		this.visited = visited;
 		this.disallowedURLs = disallowedURLs;
+		this.showLog = showLog;
 	}
 
 	@Override
@@ -109,17 +110,19 @@ public class Crawler implements Runnable {
 					 * Add the list of links to the page
 					 */
 					links.add(linkURL);
-					page.setLinks(links);
+
 				}
 			}
-
 			/*
 			 * Add page to sitemap
 			 */
+			page.setLinks(links);
+			if (showLog)
+				LOG.info("Crawled {}. Found {} valid links", page.getUrl(), page.getLinks().size());
 			sitemap.addPage(page);
 
 		} catch (IOException e) {
-			log.error("Error reading {}. Message: {}", url, e.getMessage());
+			LOG.error("Error reading {} Message: {}", page.getUrl(), e.getMessage());
 		}
 
 	}

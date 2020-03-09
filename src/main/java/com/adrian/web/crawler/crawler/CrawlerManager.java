@@ -15,15 +15,16 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.adrian.web.crawler.model.Page;
 import com.adrian.web.crawler.model.Sitemap;
 import com.adrian.web.crawler.utils.CrawlerUtils;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 public class CrawlerManager {
+
+	private static final Logger LOG = LoggerFactory.getLogger(CrawlerManager.class);
 
 	private Sitemap sitemap;
 
@@ -39,10 +40,13 @@ public class CrawlerManager {
 
 	private List<String> disallowedURLs;
 
+	private Boolean showLog;
+
 	/*
 	 * Constructor
 	 */
-	public CrawlerManager(String url, int numberOfThreads, List<String> disallowedURLs, Sitemap sitemap) {
+	public CrawlerManager(String url, int numberOfThreads, List<String> disallowedURLs, Sitemap sitemap,
+			Boolean showLog) {
 		/*
 		 * Create a new executor with a pool with the number of threads provided
 		 */
@@ -57,13 +61,15 @@ public class CrawlerManager {
 		this.numberOfThreads = numberOfThreads;
 		this.disallowedURLs = disallowedURLs;
 		this.sitemap = sitemap;
-
+		this.showLog = showLog;
 	}
 
 	/*
 	 * This method starts the crawling proccess
 	 */
 	public Sitemap startCrawling() {
+
+		LOG.info("Starting to crawl {} with {} threads", url, numberOfThreads);
 
 		/*
 		 * Start the queue so it consists of more than one element
@@ -76,7 +82,7 @@ public class CrawlerManager {
 
 		List<Runnable> runnables = new ArrayList<>();
 		for (int i = 0; i < numberOfThreads; i++) {
-			runnables.add(new Crawler(url, sitemap, visited, queue, disallowedURLs));
+			runnables.add(new Crawler(url, sitemap, visited, queue, disallowedURLs, showLog));
 		}
 
 		/*
@@ -150,7 +156,6 @@ public class CrawlerManager {
 					 * Add the list of links to the page
 					 */
 					links.add(linkURL);
-					page.setLinks(links);
 
 				}
 
@@ -158,9 +163,12 @@ public class CrawlerManager {
 			/*
 			 * Add page to sitemap
 			 */
+			page.setLinks(links);
+			if (showLog)
+				LOG.info("Crawled {} Found {} valid links", page.getUrl(), page.getLinks().size());
 			sitemap.addPage(page);
 		} catch (IOException e) {
-			log.error("Error parsing {}", url);
+			LOG.error("Error parsing {}", page.getUrl());
 		}
 
 	}

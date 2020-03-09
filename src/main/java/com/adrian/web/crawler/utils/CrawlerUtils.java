@@ -4,14 +4,15 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.apache.commons.validator.routines.UrlValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 /*
  * Class containing util methods used along the application
  */
 public class CrawlerUtils {
+
+	private static final Logger LOG = LoggerFactory.getLogger(CrawlerUtils.class);
 
 	/*
 	 * This method compares the hostname of two URLs. Ignores wether they start with
@@ -36,7 +37,7 @@ public class CrawlerUtils {
 			return linkUriString.equals(uriString);
 
 		} catch (URISyntaxException e) {
-			log.error("Error parsing URL. Message: {}", e.getMessage());
+			LOG.error("Error parsing URL. Message: {}", e.getMessage());
 		}
 
 		return false;

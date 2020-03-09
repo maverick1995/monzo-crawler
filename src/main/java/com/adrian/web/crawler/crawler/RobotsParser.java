@@ -12,7 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /*
  * This class provides a static method that given a URL, looks for the robots.txt, 
@@ -21,8 +22,9 @@ import lombok.extern.slf4j.Slf4j;
  * This is to make sure that wether the given URL starts with www or not, de disallowed links will
  * not be followed.
  */
-@Slf4j
 public class RobotsParser {
+
+	private static final Logger LOG = LoggerFactory.getLogger(CrawlerManager.class);
 
 	// constants
 	private static final String ROBOTS_TXT = "/robots.txt";
@@ -76,11 +78,11 @@ public class RobotsParser {
 			return disallowedURLs;
 
 		} catch (URISyntaxException e) {
-			log.error("Error parsing {}. Error message: {}", url, e.getMessage());
+			LOG.error("Error parsing {}. Error message: {}", url, e.getMessage());
 		} catch (MalformedURLException e) {
-			log.error("The robots.txt URL is not valid");
+			LOG.error("The robots.txt URL is not valid");
 		} catch (IOException e) {
-			log.error("Error parsing robots.txt. Error messaege: {}", e.getMessage());
+			LOG.error("Error parsing robots.txt. Error messaege: {}", e.getMessage());
 		}
 
 		return null;
